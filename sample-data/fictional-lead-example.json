@@ -1,26 +1,30 @@
+
 {
-  "notice": "Fictional examples for illustration only. These are not real customer records, and field names are simplified.",
+  "notice": "Fictional sample data. No real customer information.",
   "examples": [
     {
-      "customer_name": "Jordan Example",
-      "contact_number": "555-0100",
-      "inquiry": "Water is dripping through the ceiling after last night's storm.",
-      "urgency": "Emergency",
-      "follow_up": "Task due within 5 minutes"
+      "customer_name": "Fictional Customer",
+      "contact_number": "FICTIONAL_CONTACT",
+      "roofing_inquiry": "Emergency roof leak",
+      "urgency_indicator": "Emergency",
+      "route": "Emergency",
+      "follow_up": "within 5 minutes"
     },
     {
-      "customer_name": "Sam Sample",
-      "contact_number": "555-0101",
-      "inquiry": "Would like an estimate to replace an older roof.",
-      "urgency": "Qualified",
-      "follow_up": "Task due within 15 minutes"
+      "customer_name": "Fictional Customer",
+      "contact_number": "FICTIONAL_CONTACT",
+      "roofing_inquiry": "Roofing estimate request",
+      "urgency_indicator": "Qualified",
+      "route": "Qualified",
+      "follow_up": "within 15 minutes"
     },
     {
-      "customer_name": "Alex Demo",
-      "contact_number": "555-0102",
-      "inquiry": "General question about roof maintenance.",
-      "urgency": "Nurture",
-      "follow_up": "Task due in one day"
+      "customer_name": "Fictional Customer",
+      "contact_number": "FICTIONAL_CONTACT",
+      "roofing_inquiry": "General roofing inquiry",
+      "urgency_indicator": "Nurture",
+      "route": "Nurture",
+      "follow_up": "within 1 day"
     }
   ]
 }
