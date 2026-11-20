@@ -1,48 +1,66 @@
 # RoofFlow Architecture
 
-RoofFlow is an inbound AI voice receptionist and lead qualification automation for roofing businesses. A customer calls, the voice AI answers and gathers information, and n8n turns the conversation into a structured, prioritized CRM record with the right follow-up.
+RoofFlow is an inbound AI voice receptionist and lead qualification automation for roofing businesses.
 
-## Flow
+## The Problem
 
-**Inbound Call → AI Assistance → Data Extraction → Lead Qualification → CRM → Appointment Booking**
+Roofing inquiries often arrive by phone, where emergency leaks, estimate requests, and lower-intent questions enter the same queue. Manual notes and delayed handoffs can lose context, duplicate records, and slow the response that wins the job.
+
+## Architecture
 
 ```mermaid
-flowchart LR
-    A[Customer calls the business] --> B[Retell AI answers and gathers information]
-    B --> C[n8n webhook receives call data]
-    C --> D[Groq extracts structured lead fields]
-    D --> E[Urgency detected and lead qualified]
-    E --> F[GoHighLevel: contact, opportunity, pipeline]
-    F --> G[Appointment availability checked via Google Calendar]
-    E --> H{Route}
-    H -->|Emergency| I[Follow-up task due within 5 minutes]
-    H -->|Qualified| J[Follow-up task due within 15 minutes]
-    H -->|Nurture| K[Follow-up task due in 1 day]
+flowchart TD
+    A["Inbound Call: Customer calls, Retell AI answers and gathers information"]
+    B["Understand: n8n webhook receives call data"]
+    C["Groq: Fixed schema extracts name, contact, roofing inquiry, urgency"]
+    D["Prioritize: n8n scores urgency and intent"]
+    E["Record: GoHighLevel upserts contact and opportunity"]
+    F["Book: Google Calendar availability check before confirmation"]
+    G{"Follow Up: GoHighLevel route"}
+    H["Emergency: within 5 minutes"]
+    I["Qualified: within 15 minutes"]
+    J["Nurture: within 1 day"]
+    K["Google Sheets: Audit log with CRM record IDs"]
+    A --> B --> C --> D --> E --> F --> G
+    G -->|Emergency| H
+    G -->|Qualified| I
+    G -->|Nurture| J
+    H --> K
+    I --> K
+    J --> K
 ```
 
-## Components
+## The Workflow
 
-| Component | Role |
-|---|---|
-| Retell AI | Answers inbound calls and holds the conversation |
-| n8n | Receives webhook data and orchestrates the workflow |
-| Groq | Extracts structured lead information with a predefined prompt |
-| GoHighLevel | CRM: contacts, opportunities, pipeline, and follow-up tasks |
-| Google Calendar | Appointment scheduling and availability |
-| Webhooks | Communication between services |
+**Inbound Call → Understand → Prioritize → Record → Book → Follow Up**
 
-## Follow-up routing
+## How It Works
 
-| Lead type | Follow-up |
-|---|---|
-| Emergency | Task due within 5 minutes |
-| Qualified | Task due within 15 minutes |
-| Nurture | Task due in one day |
+1. A customer calls the business. Retell AI answers, responds naturally, assists the caller, and gathers information.
+2. An n8n webhook receives the call data.
+3. Groq extracts structured lead information using a fixed extraction schema. Captured: customer name, contact number, roofing inquiry, and an urgency indicator.
+4. n8n applies deterministic urgency and intent scoring. Urgency is detected by n8n, NOT by GoHighLevel.
+5. The contact and opportunity are upserted in GoHighLevel, which holds the CRM pipeline and follow-up tasks.
+6. Appointment booking checks availability in Google Calendar before a booking is confirmed.
+7. Follow-up tasks are created by route in GoHighLevel: Emergency within 5 minutes, Qualified within 15 minutes, Nurture within 1 day.
+8. Every routed outcome is logged to Google Sheets, with CRM record IDs, as an audit trail.
 
-## Design decisions
-- A predefined extraction prompt so lead data comes out in a consistent structure
-- Contact upsert logic to reduce duplicate records
-- Explicit routing branches by urgency
+## Tools
 
-## Not included in this repository
-Real customer data, phone numbers, emails, client names, credentials, live webhook URLs, account IDs, call transcripts, and workflow exports.
+Retell AI (inbound voice AI) · n8n (webhook, orchestration, urgency scoring) · Groq (structured extraction) · GoHighLevel (CRM, pipeline, follow-up tasks) · Google Calendar (availability and booking) · Google Sheets (audit log) · Webhooks
+
+## Reliability
+
+Fixed extraction schema · Deterministic urgency rules · Contact upsert to reduce duplicates · Explicit routing branches · Every routed outcome logged to Google Sheets
+
+## Testing
+
+The Emergency, Qualified, and Nurture routes were scenario-tested. Run-level execution records and raw data are not published, to protect customer information.
+
+## Result
+
+Turns roofing calls into structured, prioritized CRM actions, so urgent leaks are handled quickly, qualified leads are booked, and every follow-up is traceable.
+
+## Not Published
+
+Real customer data, phone numbers, emails, client or company names, credentials, live webhook URLs, account or workspace IDs, call transcripts, and workflow exports. Sample data is fictional.
