@@ -2,7 +2,7 @@
 
 Inbound AI voice receptionist and lead qualification automation for roofing businesses. Demo built with sample data.
 
-**Call → Understand → Prioritize → Record → Book → Follow Up**
+**Inbound Call → Understand → Prioritize → Record → Book → Follow Up**
 
 ```mermaid
 flowchart LR
