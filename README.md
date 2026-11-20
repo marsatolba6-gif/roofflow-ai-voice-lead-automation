@@ -12,14 +12,14 @@ Roofing inquiries often arrive by phone, where emergency leaks, estimate request
 
 ## How It Works
 
-- A customer calls the business. Retell AI answers, responds naturally, assists the caller, and gathers information.
-- An n8n webhook receives the call data.
-- Groq extracts structured lead information using a fixed extraction schema. Captured: customer name, contact number, roofing inquiry, and an urgency indicator.
-- n8n applies deterministic urgency and intent scoring. Urgency is detected by n8n, NOT by GoHighLevel.
-- The contact and opportunity are upserted in GoHighLevel, which holds the CRM pipeline and follow-up tasks.
-- Appointment booking checks availability in Google Calendar before a booking is confirmed.
-- Follow-up tasks are created by route in GoHighLevel: Emergency within 5 minutes, Qualified within 15 minutes, Nurture within 1 day.
-- Every routed outcome is logged to Google Sheets, with CRM record IDs, as an audit trail.
+1. A customer calls the business. Retell AI answers, responds naturally, assists the caller, and gathers information.
+2. An n8n webhook receives the call data.
+3. Groq extracts structured lead information using a fixed extraction schema. Captured: customer name, contact number, roofing inquiry, and an urgency indicator.
+4. n8n applies deterministic urgency and intent scoring. Urgency is detected by n8n, NOT by GoHighLevel.
+5. The contact and opportunity are upserted in GoHighLevel, which holds the CRM pipeline and follow-up tasks.
+6. Appointment booking checks availability in Google Calendar before a booking is confirmed.
+7. Follow-up tasks are created by route in GoHighLevel: Emergency within 5 minutes, Qualified within 15 minutes, Nurture within 1 day.
+8. Every routed outcome is logged to Google Sheets, with CRM record IDs, as an audit trail.
 
 ## Tools
 
