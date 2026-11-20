@@ -10,7 +10,7 @@ Built with Retell AI, n8n, Groq, GoHighLevel, Google Calendar, and Google Sheets
 Roofing inquiries often arrive by phone, where emergency leaks, estimate requests, and lower-intent questions enter the same queue. Manual notes and delayed handoffs can lose context, duplicate records, and slow the response that wins the job.
 
 ## How It Works
-**Inbound Call → Understand → Prioritize → Record → Book → Follow Up**
+**Call → Understand → Prioritize → Record → Book → Follow Up**
 
 1. A customer calls the business. Retell AI answers, responds naturally, assists the caller, and gathers information.
 2. An n8n webhook receives the call data.
