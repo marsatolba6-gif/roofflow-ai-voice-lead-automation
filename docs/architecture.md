@@ -1,39 +1,48 @@
-# RoofFlow — Architecture (verification pending)
+# RoofFlow Architecture
 
-**Confirmed:** RoofFlow concerns AI voice and lead automation for roofing leads. It uses **Retell AI (voice AI)** and **n8n**. The business problem is missed calls and slow follow-ups.
+RoofFlow is an inbound AI voice receptionist and lead qualification automation for roofing businesses. A customer calls, the voice AI answers and gathers information, and n8n turns the conversation into a structured, prioritized CRM record with the right follow-up.
 
-**Not confirmed:** the actual inbound call provider, trigger sequence, Retell-to-n8n integration, information captured, storage/CRM, follow-up actions, or delivery/handling rules. The diagram below is a **documentation scaffold**, not a verified production architecture. **Dotted connectors are unknown transitions**, not confirmed integrations.
+## Flow
+
+**Inbound Call → AI Assistance → Data Extraction → Lead Qualification → CRM → Appointment Booking**
 
 ```mermaid
-flowchart TD
-    A["Roofing lead / call scenario"]
-    B["Retell AI — voice AI"]
-    C["[TODO: Confirm handoff / trigger]"]
-    D["n8n — automation"]
-    E["[TODO: Confirm captured fields]"]
-    F["[TODO: Confirm destination: storage / CRM / other]"]
-    G["[TODO: Confirm follow-up and completion behavior]"]
-
-    A -. "[TODO: Actual call entry]" .-> B
-    B -. "[TODO: Actual integration path]" .-> C
-    C -. "[TODO: Verify trigger]" .-> D
-    D -. "[TODO: Confirm whether and how data is recorded]" .-> E
-    E -. "[TODO: Actual destination]" .-> F
-    F -. "[TODO: Actual handling actions]" .-> G
+flowchart LR
+    A[Customer calls the business] --> B[Retell AI answers and gathers information]
+    B --> C[n8n webhook receives call data]
+    C --> D[Groq extracts structured lead fields]
+    D --> E[Urgency detected and lead qualified]
+    E --> F[GoHighLevel: contact, opportunity, pipeline]
+    F --> G[Appointment availability checked via Google Calendar]
+    E --> H{Route}
+    H -->|Emergency| I[Follow-up task due within 5 minutes]
+    H -->|Qualified| J[Follow-up task due within 15 minutes]
+    H -->|Nurture| K[Follow-up task due in 1 day]
 ```
 
-## Details to verify before replacing TODOs
+## Components
 
-| Question | Current status |
-| --- | --- |
-| How does a call reach the voice-AI system? | [TODO: Confirm actual entry point and trigger.] |
-| What happens during the call? | [TODO: Confirm real conversation steps and any conditions.] |
-| How does n8n participate? | [TODO: Confirm actual event, trigger, or data transfer.] |
-| What information is captured? | [TODO: List verified field names only.] |
-| Where is it stored? | [TODO: Confirm actual destination; Google Sheets or a CRM is **not** established.] |
-| What happens after the call? | [TODO: Confirm the actual follow-up mechanism.] |
-| What may be publicly shared? | [TODO: Get approval for any further details or diagrams.] |
+| Component | Role |
+|---|---|
+| Retell AI | Answers inbound calls and holds the conversation |
+| n8n | Receives webhook data and orchestrates the workflow |
+| Groq | Extracts structured lead information with a predefined prompt |
+| GoHighLevel | CRM: contacts, opportunities, pipeline, and follow-up tasks |
+| Google Calendar | Appointment scheduling and availability |
+| Webhooks | Communication between services |
 
-## Privacy / sanitization
+## Follow-up routing
 
-Do not publish real customer information, phone numbers, email addresses, client or company names, credentials, live webhook URLs, workspace/account IDs, recordings, raw transcripts, or identifying screenshots. If a real n8n export is provided later, sanitize and review it before committing anything to `workflows/`.
+| Lead type | Follow-up |
+|---|---|
+| Emergency | Task due within 5 minutes |
+| Qualified | Task due within 15 minutes |
+| Nurture | Task due in one day |
+
+## Design decisions
+- A predefined extraction prompt so lead data comes out in a consistent structure
+- Contact upsert logic to reduce duplicate records
+- Explicit routing branches by urgency
+
+## Not included in this repository
+Real customer data, phone numbers, emails, client names, credentials, live webhook URLs, account IDs, call transcripts, and workflow exports.
